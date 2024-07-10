@@ -3,7 +3,7 @@ package sender
 import (
     "errors"
     "github.com/labstack/echo"
-    "github.com/sdvdxl/dinghook"
+    "falcon-message/dinghook"
     "log"
     "net/http"
 )
