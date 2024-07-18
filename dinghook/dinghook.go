@@ -28,8 +28,9 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
-	"gopkg.in/go-playground/validator.v9"
 	"sync"
+
+	"gopkg.in/go-playground/validator.v9"
 )
 
 const (
@@ -271,7 +272,7 @@ func convertMessage(m Message) map[string]interface{} {
 	var paramsMap = make(map[string]interface{})
 	paramsMap["msgtype"] = "text"
 	paramsMap["text"] = map[string]string{"content": m.Content}
-	paramsMap["at"] = map[string]interface{}{"atMobiles": m.AtData.AtMobiles,"atUserIds":m.AtData, "isAtAll": m.AtData}
+	paramsMap["at"] = map[string]interface{}{"atMobiles": m.AtData.AtMobiles, "atUserIds": m.AtData, "isAtAll": m.AtData}
 	return paramsMap
 }
 
@@ -286,6 +287,7 @@ func convertMarkdown(m Markdown) map[string]interface{} {
 	var paramsMap = make(map[string]interface{})
 	paramsMap["msgtype"] = "markdown"
 	paramsMap["markdown"] = map[string]string{"text": m.Content, "title": m.Title}
+	paramsMap["at"] = map[string]bool{"isAtAll": true}
 	return paramsMap
 }
 
