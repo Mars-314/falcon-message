@@ -63,10 +63,10 @@ type Ding struct {
 }
 
 // 告警at
-type alarmAt struct {
-	Tmp       string `json:"tmp"`
-	AtMobiles string `json:"atMobiles"`
-}
+// type alarmAt struct {
+// 	Tmp       string `json:"tmp"`
+// 	AtMobiles string `json:"atMobiles"`
+// }
 
 func calcSign(timestamp int64, signToken string) string {
 	stringToSign := fmt.Sprintf("%d\n%s", timestamp, signToken)
@@ -313,14 +313,14 @@ func convertMarkdown(m Markdown) map[string]interface{} {
 			Mobiles = append(Mobiles, msg.AtMobiles)
 		}
 	}*/
-	var Mobiles []string
+	var UserIds []string
 	args := strings.Split(m.Content, "@")
 	for i := 1; i < len(args)-1; i++ {
-		Mobiles = append(Mobiles, args[i])
+		UserIds = append(UserIds, args[i])
 	}
 	if len(args) >= 2 {
 		args1 := strings.Split(args[len(args)-1], "，已持续")
-		Mobiles = append(Mobiles, args1[0])
+		UserIds = append(UserIds, args1[0])
 	}
 
 	var paramsMap = make(map[string]interface{})
@@ -330,7 +330,7 @@ func convertMarkdown(m Markdown) map[string]interface{} {
 	if len(args) < 2 {
 		flag = true
 	}
-	paramsMap["at"] = map[string]interface{}{"atMobiles": Mobiles, "isAtAll": flag}
+	paramsMap["at"] = map[string]interface{}{"atUserIds": UserIds, "isAtAll": flag}
 	return paramsMap
 }
 
