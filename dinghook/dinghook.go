@@ -62,6 +62,12 @@ type Ding struct {
 	SignToken   string // 加签token，可选，如果填写则使用加签方式发送，否则需要自己使用关键词或者ip方式
 }
 
+// 告警at
+type alarmAt struct {
+	Tmp       string `json:"tmp"`
+	AtMobiles string `json:"atMobiles"`
+}
+
 func calcSign(timestamp int64, signToken string) string {
 	stringToSign := fmt.Sprintf("%d\n%s", timestamp, signToken)
 	h := hmac.New(sha256.New, []byte(signToken))
@@ -284,10 +290,47 @@ func convertLink(m Link) map[string]interface{} {
 }
 
 func convertMarkdown(m Markdown) map[string]interface{} {
+	//从json文件中读取艾特信息
+	/*file, err := os.Open("alarmAt.json")
+	if err != nil {
+		log.Fatalf("Error opening file: %v", err)
+	}
+	defer file.Close()
+
+	// 创建解码器
+	decoder := json.NewDecoder(file)
+
+	// 解码JSON数据到Message切片
+	var messages []alarmAt
+	if err := decoder.Decode(&messages); err != nil {
+		log.Fatalf("Error decoding JSON: %v", err)
+	}
+
+	var Mobiles []string
+	// 遍历并打印解码后的数据
+	for _, msg := range messages {
+		if strings.Contains(m.Content, msg.Tmp) {
+			Mobiles = append(Mobiles, msg.AtMobiles)
+		}
+	}*/
+	var Mobiles []string
+	args := strings.Split(m.Content, "@")
+	for i := 1; i < len(args)-1; i++ {
+		Mobiles = append(Mobiles, args[i])
+	}
+	if len(args) >= 2 {
+		args1 := strings.Split(args[len(args)-1], "，已持续")
+		Mobiles = append(Mobiles, args1[0])
+	}
+
 	var paramsMap = make(map[string]interface{})
 	paramsMap["msgtype"] = "markdown"
 	paramsMap["markdown"] = map[string]string{"text": m.Content, "title": m.Title}
-	paramsMap["at"] = map[string]bool{"isAtAll": true}
+	var flag bool
+	if len(args) < 2 {
+		flag = true
+	}
+	paramsMap["at"] = map[string]interface{}{"atMobiles": Mobiles, "isAtAll": flag}
 	return paramsMap
 }
 
