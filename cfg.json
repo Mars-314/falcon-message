@@ -2,7 +2,8 @@
   "addr": "11.165.57.220:23329",
   "dingTalk": {
     "enable": true,
-    "templateFile": "message-template.md",
+    "templateFile_ok": "message-template-ok.md",
+    "templateFile_problem": "message-template-problem.md",
     "messageType": "markdown"
   },
   "wexin": {
